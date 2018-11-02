@@ -11,18 +11,17 @@ sourceCpp('aux1.cpp')
 dat=read.csv('fake data4.csv',as.is=T)
 ind=which(colnames(dat)=='X')
 y=data.matrix(dat[,-ind]); dim(y)
-nspp=ncol(y)
-nloc=nrow(y)
-
 xmat=data.matrix(read.csv('fake data xmat4.csv',as.is=T))
-npar=ncol(xmat)
-txmat=t(xmat)
-xtx=txmat%*%xmat
 
 #useful stuff
 ncomm=4
 hi=0.999999
 lo=0.000001
+nspp=ncol(y)
+nloc=nrow(y)
+npar=ncol(xmat)
+txmat=t(xmat)
+xtx=txmat%*%xmat
 
 #initial values of parameters
 betas=matrix(0,npar,ncomm-1)
@@ -37,6 +36,8 @@ b.sig2=nloc*(ncomm-1)/200
 
 #gibbs details
 ngibbs=1000
+
+#objects to store gibbs output
 theta.out=matrix(NA,ngibbs,ncomm*nloc)
 phi.out=matrix(NA,ngibbs,ncomm*nspp)
 betas.out=matrix(NA,ngibbs,npar*(ncomm-1))
@@ -48,11 +49,12 @@ accept.output=50
 jump1=list(omega=matrix(1,nloc,ncomm))
 accept1=list(omega=matrix(0,nloc,ncomm))
 
+#gibbs sampler
 options(warn=2)
 for (i in 1:ngibbs){
   print(i)   
 
-  #get parameters  
+  #get omega and theta (after integrating out the z's)
   tmp=get.omega.theta(y=y,sig2=sig2,ncomm=ncomm,nloc=nloc,
                       omega=omega,xmat=xmat,betas=betas,phi=phi,jump=jump1$omega)
   omega=tmp$omega
@@ -69,14 +71,17 @@ for (i in 1:ngibbs){
   nks=tmp$nks
   # nks=nks.true
 
+  #sample phi
   phi=rdirichlet1(alpha=nks+1,ncomm=ncomm,nspp=nspp)
   phi[phi>hi]=hi; phi[phi<lo]=lo
-  phi[,4]=c(0,0,0,0.0852488)
+  phi[,4]=c(0,0,0,0.0852488) #this ensures that estimated=true last community
   # phi=phi.true
   
+  #sample regression coefficients betas
   betas=get.betas(xtx=xtx,sig2=sig2,omega=omega,nparam=npar,
                   ncomm=ncomm,txmat=txmat)
 
+  #sample sig2
   sig2=get.sig2(nloc=nloc,ncomm=ncomm,xmat=xmat,betas=betas,
                 omega=omega,a.sig2=a.sig2,b.sig2=b.sig2)
 
@@ -100,3 +105,4 @@ for (i in 1:ngibbs){
 }
 
 plot(llk,type='l',ylim=range(llk,na.rm=T))
+plot(sig2.out,type='l')

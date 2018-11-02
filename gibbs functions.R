@@ -15,13 +15,16 @@ acceptMH <- function(p0,p1,x0,x1){   #accept for M, M-H
   which(z < a)
 }
 #----------------------------------------------------------------------------------------------
+#this function calculates the factor to be added in the MH acceptance ratio to correct
+#for truncated normal proposal
 fix.MH=function(lo,hi,old1,new1,jump){
   jold=pnorm(hi,mean=old1,sd=jump)-pnorm(lo,mean=old1,sd=jump)
   jnew=pnorm(hi,mean=new1,sd=jump)-pnorm(lo,mean=new1,sd=jump)
   log(jold)-log(jnew) #add this to pnew
 }
 #------------------------------------
-tnorm <- function(n,lo,hi,mu,sig){   #generates truncated normal variates based on cumulative normal distribution
+#generates truncated normal variates based on cumulative normal distribution
+tnorm <- function(n,lo,hi,mu,sig){   
   #normal truncated lo and hi
   
   if(length(lo) == 1 & length(mu) > 1)lo <- rep(lo,length(mu))
@@ -37,7 +40,7 @@ tnorm <- function(n,lo,hi,mu,sig){   #generates truncated normal variates based 
   z
 }
 #------------------------------------
-#this function generates vmat, which is then used to generate the theta matrix
+#this function generates omega, which is then used to generate the theta matrix
 get.omega.theta=function(y,sig2,ncomm,nloc,omega,xmat,betas,phi,jump){
   k=-(1/(2*sig2))
   omega.new=omega.old=omega
@@ -72,6 +75,7 @@ get.omega.theta=function(y,sig2,ncomm,nloc,omega,xmat,betas,phi,jump){
   list(omega=omega.old,theta=theta,accept=omega.old!=omega)
 }
 #------------------------------------------------------------------------------
+#this function samples regression coefficients
 get.betas=function(xtx,sig2,omega,nparam,ncomm,txmat){
   prec=(1/sig2)*xtx+diag(1,nparam)
   var1=solve(prec)
@@ -80,13 +84,15 @@ get.betas=function(xtx,sig2,omega,nparam,ncomm,txmat){
   t(rmvnorm1(ncomm-1,var1))+media
 }
 #-----------------------------------------------------------------
-#this function generates dirichlet random variables (1 one for each row of alpha)
+#this function generates dirichlet random variables 
+#(one random variable for each row of alpha)
 rdirichlet1=function(alpha,ncomm,nspp){
   tmp=matrix(rgamma(n=ncomm*nspp,alpha,1),ncomm,nspp)
   soma=matrix(rowSums(tmp),ncomm,nspp)
   tmp/soma
 }
 #------------------------------------------------------------------------------
+#this function generates sig2
 get.sig2=function(nloc,ncomm,xmat,betas,omega,a.sig2,b.sig2){
   a=(nloc*(ncomm-1)+2*a.sig2)/2
   media=xmat%*%betas
@@ -95,6 +101,8 @@ get.sig2=function(nloc,ncomm,xmat,betas,omega,a.sig2,b.sig2){
   1/rgamma(1,a,b)
 }
 #-----------------------------------------------------------------------------------------------
+#this function changes jump based on acceptance frequency
+#optimal acceptance probability is between 0.2 and 0.4
 print.adapt = function(accept1z,jump1z,accept.output){
   accept1=accept1z; jump1=jump1z; 
   

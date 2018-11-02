@@ -1,4 +1,4 @@
-table(gamma.out)
+betas
 
 boxplot(theta)
 
@@ -12,3 +12,10 @@ plot(phi.true,phi[ind,])
 
 betas1=betas[,3:1]
 plot(betas.true,betas1)
+
+par(mfrow=c(1,1))
+plot(NA,NA,xlim=c(1,nloc),ylim=c(0,1))
+for (i in 1:4) {
+  # lines(1:nloc,theta.true[,i],col=i)
+  lines(1:nloc,theta1[,i],col=i,lty=3)
+}
