@@ -51,9 +51,10 @@ get.omega.theta=function(y,sig2,ncomm,nloc,omega,xmat,betas,phi,jump){
   
   media=xmat%*%betas
   prior.old=k*((omega.old[,-ncomm]-media)^2)
-  prior.new=k*((omega.new[,-ncomm]-media)^2)
+  prior.new=k*((proposed[,-ncomm]-media)^2)
   
   for (i in 1:(ncomm-1)){
+    omega.new=omega.old
     omega.new[,i]=proposed[,i]
     
     #get corresponding thetas
