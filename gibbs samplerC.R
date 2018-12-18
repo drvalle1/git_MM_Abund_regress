@@ -31,8 +31,8 @@ phi=matrix(1/nspp,ncomm,nspp)
 sig2=1 
 
 #priors
-a.sig2=nloc*(ncomm-1)/2
-b.sig2=nloc*(ncomm-1)/200
+a.sig2=0.1#nloc*(ncomm-1)/2
+b.sig2=0.1#nloc*(ncomm-1)/200
 
 #gibbs details
 ngibbs=1000
