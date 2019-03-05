@@ -17,7 +17,7 @@ betas[,1]=c(-3,4,0,0)
 betas[,2]=c(-3,0,4,0)
 betas[,3]=c(-3,0,0,4)
 betas.true=betas
-sig2=0.1
+sig2=0.3
 
 media=xmat%*%betas; range(media)
 eres=cbind(exp(media),1)
