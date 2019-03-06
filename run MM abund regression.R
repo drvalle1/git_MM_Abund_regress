@@ -19,8 +19,8 @@ nloc=nrow(y)
 ncomm=4
 ngibbs=1000
 nburn=ngibbs/2
-a.sig2=10#nloc*(ncomm-1)/2
-b.sig2=1#nloc*(ncomm-1)/20
+a.sig2=0.1#nloc*(ncomm-1)/2
+b.sig2=0.1#nloc*(ncomm-1)/20
 a.sig2/b.sig2 #precision of 10
 
 res=MM.abund.regression(y=y,xmat=xmat,
