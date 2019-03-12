@@ -1,4 +1,4 @@
-MM.abund.regression=function(y,xmat,ncomm,a.sig2,b.sig2,ngibbs,nburn){
+MM.abund.regression=function(y,xmat,ncomm,a.sig2,b.sig2,ngibbs,nburn,psi){
   #useful stuff
   hi=0.999999
   lo=0.000001
@@ -50,7 +50,7 @@ MM.abund.regression=function(y,xmat,ncomm,a.sig2,b.sig2,ngibbs,nburn){
     # nks=nks.true
   
     #sample phi
-    phi=rdirichlet1(alpha=nks+1,ncomm=ncomm,nspp=nspp)
+    phi=rdirichlet1(alpha=nks+psi,ncomm=ncomm,nspp=nspp)
     phi[phi>hi]=hi; phi[phi<lo]=lo
     # phi[,4]=c(0,0,0,0.0852488) #this ensures that estimated=true last community
     # phi=phi.true

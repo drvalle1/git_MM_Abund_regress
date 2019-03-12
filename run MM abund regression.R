@@ -22,10 +22,11 @@ nburn=ngibbs/2
 a.sig2=0.1#nloc*(ncomm-1)/2
 b.sig2=0.1#nloc*(ncomm-1)/20
 a.sig2/b.sig2 #precision of 10
+psi=0.01
 
 res=MM.abund.regression(y=y,xmat=xmat,
                         ncomm=ncomm,ngibbs=ngibbs,nburn=nburn,
-                        a.sig2=a.sig2,b.sig2=b.sig2)
+                        a.sig2=a.sig2,b.sig2=b.sig2,psi=psi)
   
 plot(res$llk,type='l')
 plot(res$sig2,type='l')
